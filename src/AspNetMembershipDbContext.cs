@@ -20,18 +20,18 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         {
             modelBuilder.Entity<AspNetUser>().ToTable("aspnet_Users", "dbo");
             modelBuilder.Entity<AspNetUser>().HasKey(u => u.UserId);
-            modelBuilder.Entity<AspNetUser>().HasOne(u => u.AspNetMembership).WithOne(m => m.AspNetUser).IsRequired();
-            modelBuilder.Entity<AspNetUser>().HasOne(u => u.AspNetApplication).WithMany(a => a.AspNetUsers).IsRequired();
+            modelBuilder.Entity<AspNetUser>().HasOne(u => u.AspNetMembership).WithOne(m => m.AspNetUser).HasForeignKey<AspNetMembership>(m=>m.UserId).IsRequired();
+            //modelBuilder.Entity<AspNetUser>().HasOne(u => u.AspNetApplication).WithMany(a => a.AspNetUsers).IsRequired();
 
             modelBuilder.Entity<AspNetMembership>().ToTable("aspnet_Membership", "dbo");
             modelBuilder.Entity<AspNetMembership>().HasKey(m => m.UserId);
-            modelBuilder.Entity<AspNetMembership>().HasOne(m => m.AspNetUser).WithOne(u => u.AspNetMembership).IsRequired();
-            modelBuilder.Entity<AspNetMembership>().HasOne(m => m.AspNetApplication).WithMany(a => a.AspNetMemberships).IsRequired();
+            //modelBuilder.Entity<AspNetMembership>().HasOne(m => m.AspNetUser).WithOne(u => u.AspNetMembership).IsRequired();
+            //modelBuilder.Entity<AspNetMembership>().HasOne(m => m.AspNetApplication).WithMany(a => a.AspNetMemberships).IsRequired();
 
             modelBuilder.Entity<AspNetApplication>().ToTable("aspnet_Applications", "dbo");
             modelBuilder.Entity<AspNetApplication>().HasKey(a => a.ApplicationId);
-            modelBuilder.Entity<AspNetApplication>().HasMany(a => a.AspNetUsers).WithOne(u => u.AspNetApplication).IsRequired();
-            modelBuilder.Entity<AspNetApplication>().HasMany(a => a.AspNetMemberships).WithOne(m => m.AspNetApplication).IsRequired();
+            modelBuilder.Entity<AspNetApplication>().HasMany(a => a.AspNetUsers).WithOne(u => u.AspNetApplication).IsRequired().HasForeignKey(u=>u.ApplicationId);
+            modelBuilder.Entity<AspNetApplication>().HasMany(a => a.AspNetMemberships).WithOne(m => m.AspNetApplication).IsRequired().HasForeignKey(m=>m.ApplicationId);
         }
 
         public DbSet<AspNetUser> AspNetUsers { get; set; }
