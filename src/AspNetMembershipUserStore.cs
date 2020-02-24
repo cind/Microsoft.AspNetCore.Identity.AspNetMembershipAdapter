@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +8,6 @@ using System.Threading.Tasks;
 namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 {
     public class AspNetMembershipUserStore : 
-        IUserStore<AspNetMembershipUser>, 
         IUserPasswordStore<AspNetMembershipUser>, 
         IUserEmailStore<AspNetMembershipUser>,
         IUserRoleStore<AspNetMembershipUser>
@@ -168,7 +165,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 
         public Task<string> GetUserIdAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.Id.ToString());
+            return Task.FromResult(user.Id);
         }
 
         public Task<string> GetUserNameAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
