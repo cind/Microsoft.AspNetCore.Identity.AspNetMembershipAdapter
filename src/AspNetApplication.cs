@@ -12,11 +12,13 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public string Description { get; set; }
         public virtual ICollection<AspNetUser> AspNetUsers { get; set; }
         public virtual ICollection<AspNetMembership> AspNetMemberships { get; set; }
+        public virtual ICollection<AspNetRole> AspNetRoles { get; set; }
 
         public AspNetApplication()
         {
             this.AspNetUsers = new HashSet<AspNetUser>();
             this.AspNetMemberships = new HashSet<AspNetMembership>();
+            this.AspNetRoles = new HashSet<AspNetRole>();
         }
     }
 }

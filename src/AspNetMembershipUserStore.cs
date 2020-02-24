@@ -9,7 +9,11 @@ using System.Threading.Tasks;
 
 namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 {
-    public class AspNetMembershipUserStore : IUserStore<AspNetMembershipUser>, IUserPasswordStore<AspNetMembershipUser>, IUserEmailStore<AspNetMembershipUser>
+    public class AspNetMembershipUserStore : 
+        IUserStore<AspNetMembershipUser>, 
+        IUserPasswordStore<AspNetMembershipUser>, 
+        IUserEmailStore<AspNetMembershipUser>,
+        IUserRoleStore<AspNetMembershipUser>
     {
         private readonly AspNetMembershipDbContext _dbcontext;
 
@@ -284,6 +288,31 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             to.AspNetMembership.IsLockedOut = false;
             to.AspNetMembership.FailedPasswordAnswerAttemptWindowStart = DateTime.Parse("1754-01-01 00:00:00.000");
             to.AspNetMembership.FailedPasswordAttemptWindowStart = DateTime.Parse("1754-01-01 00:00:00.000");
+        }
+
+        public Task AddToRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveFromRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<string>> GetRolesAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsInRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<AspNetMembershipUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
