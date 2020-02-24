@@ -143,72 +143,72 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 
         public Task<string> GetEmailAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.Email);
+            return Task.FromResult(user.Email);
         }
 
         public Task<bool> GetEmailConfirmedAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.EmailConfirmed);
+            return Task.FromResult(user.EmailConfirmed);
         }
 
         public Task<string> GetNormalizedEmailAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.NormalizedEmail);
+            return Task.FromResult(user.NormalizedEmail);
         }
 
         public Task<string> GetNormalizedUserNameAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.NormalizedUserName);
+            return Task.FromResult(user.NormalizedUserName);
         }
 
         public Task<string> GetPasswordHashAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.PasswordHash);
+            return Task.FromResult(user.PasswordHash);
         }
 
         public Task<string> GetUserIdAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.Id.ToString());
+            return Task.FromResult(user.Id.ToString());
         }
 
         public Task<string> GetUserNameAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.UserName);
+            return Task.FromResult(user.UserName);
         }
 
         public Task<bool> HasPasswordAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => !string.IsNullOrEmpty(user.PasswordHash));
+            return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
         }
 
         public Task SetEmailAsync(AspNetMembershipUser user, string email, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.Email = email);
+            return Task.FromResult(user.Email = email);
         }
 
         public Task SetEmailConfirmedAsync(AspNetMembershipUser user, bool confirmed, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.EmailConfirmed = confirmed);
+            return Task.FromResult(user.EmailConfirmed = confirmed);
         }
 
         public Task SetNormalizedEmailAsync(AspNetMembershipUser user, string normalizedEmail, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.NormalizedEmail = normalizedEmail);
+            return Task.FromResult(user.NormalizedEmail = normalizedEmail);
         }
 
         public Task SetNormalizedUserNameAsync(AspNetMembershipUser user, string normalizedName, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.NormalizedUserName = normalizedName);
+            return Task.FromResult(user.NormalizedUserName = normalizedName);
         }
 
         public Task SetPasswordHashAsync(AspNetMembershipUser user, string passwordHash, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.PasswordHash = passwordHash);
+            return Task.FromResult(user.PasswordHash = passwordHash);
         }
 
         public Task SetUserNameAsync(AspNetMembershipUser user, string userName, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() => user.UserName = userName);
+            return Task.FromResult(user.UserName = userName);
         }
 
         public Task<IdentityResult> UpdateAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
