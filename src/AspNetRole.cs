@@ -4,17 +4,15 @@ using System.Text;
 
 namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 {
-    public class AspNetUser
+    public class AspNetRole
     {
         public Guid ApplicationId { get; set; }
-        public Guid UserId { get; set; }
-        public string UserName { get; set; }
-        public string LoweredUserName { get; set; }
-        public string MobileAlias { get; set; }
-        public bool IsAnonymous { get; set; }
-        public DateTime LastActivityDate { get; set; }
-        public virtual AspNetMembership AspNetMembership { get; set; }
+        public Guid RoleId { get; set; }
+        public string RoleName { get; set; }
+        public string LoweredRoleName { get; set; }
+        public string Description { get; set; }
         public virtual AspNetApplication AspNetApplication { get; set; }
         public virtual ICollection<AspNetUsersInRoles> AspNetUsersInRoles { get; set; } = new HashSet<AspNetUsersInRoles>();
+
     }
 }
