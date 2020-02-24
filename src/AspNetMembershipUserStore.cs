@@ -307,27 +307,27 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var ur = new AspNetUsersInRoles
+            var userRole = new AspNetUsersInRoles
             {
                 RoleID = role.RoleId,
                 UserID = dbuser.UserId
             };
 
-            await _dbcontext.AspNetUsersInRoles.AddAsync(ur, cancellationToken).ConfigureAwait(false);
+            await _dbcontext.AspNetUsersInRoles.AddAsync(userRole, cancellationToken).ConfigureAwait(false);
             await _dbcontext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
         public async Task RemoveFromRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
-            var ur = await _dbcontext.AspNetUsersInRoles
+            var userRole = await _dbcontext.AspNetUsersInRoles
                 .Where(ur => ur.UserID.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower())
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            if (ur == null)
+            if (userRole == null)
                 return;
 
-            _dbcontext.AspNetUsersInRoles.Remove(ur);
+            _dbcontext.AspNetUsersInRoles.Remove(userRole);
             await _dbcontext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
