@@ -303,8 +303,8 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 
             var userRole = new AspNetUsersInRoles
             {
-                RoleID = role.RoleId,
-                UserID = dbuser.UserId
+                RoleId = role.RoleId,
+                UserId = dbuser.UserId
             };
 
             await _dbcontext.AspNetUsersInRoles.AddAsync(userRole, cancellationToken).ConfigureAwait(false);
@@ -314,7 +314,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public async Task RemoveFromRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
             var userRole = await _dbcontext.AspNetUsersInRoles
-                .Where(ur => ur.UserID.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower())
+                .Where(ur => ur.UserId.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower())
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -338,7 +338,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public async Task<bool> IsInRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
             return await _dbcontext.AspNetUsersInRoles
-                .AnyAsync(ur => ur.UserID.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower(),
+                .AnyAsync(ur => ur.UserId.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower(),
                     cancellationToken)
                 .ConfigureAwait(false);
 

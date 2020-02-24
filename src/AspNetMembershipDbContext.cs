@@ -58,16 +58,16 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             modelBuilder.Entity<AspNetUsersInRoles>()
                 .ToTable("aspnet_UsersInRoles", "dbo");
             modelBuilder.Entity<AspNetUsersInRoles>()
-                .HasKey(ur => new {ur.UserID, ur.RoleID});
+                .HasKey(ur => new {ur.UserId, ur.RoleId});
             modelBuilder.Entity<AspNetUsersInRoles>()
                 .HasOne(ur => ur.User)
                 .WithMany(u => u.AspNetUsersInRoles)
-                .HasForeignKey(ur => ur.UserID)
+                .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
             modelBuilder.Entity<AspNetUsersInRoles>()
                 .HasOne(ur => ur.Role)
                 .WithMany(u => u.AspNetUsersInRoles)
-                .HasForeignKey(ur => ur.RoleID)
+                .HasForeignKey(ur => ur.RoleId)
                 .IsRequired();
         }
 

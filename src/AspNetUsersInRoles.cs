@@ -6,8 +6,8 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 {
     public class AspNetUsersInRoles
     {
-        public Guid UserID { get; set; }
-        public Guid RoleID { get; set; }
+        public Guid UserId { get; set; }
+        public Guid RoleId { get; set; }
         public virtual AspNetUser User { get; set; }
         public virtual AspNetRole Role { get; set; }
     }
