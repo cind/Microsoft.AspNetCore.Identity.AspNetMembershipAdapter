@@ -77,65 +77,60 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             _dbcontext.Dispose();
         }
 
-        public Task<AspNetMembershipUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        public async Task<AspNetMembershipUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
+            AspNetUser dbUser = await _dbcontext.AspNetUsers
+                .Include(u => u.AspNetApplication)
+                .Include(u => u.AspNetMembership)
+                .Where(u => u.AspNetMembership.Email.ToLower() == normalizedEmail.ToLower())
+                .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+
+            if (dbUser == null)
             {
-                AspNetUser dbUser = _dbcontext.AspNetUsers
-                    .Include(u => u.AspNetApplication)
-                    .Include(u => u.AspNetMembership)
-                    .SingleOrDefault(u => u.AspNetMembership.Email.ToLower() == normalizedEmail.ToLower());
+                return null;
+            }
 
-                if (dbUser == null)
-                {
-                    return null;
-                }
-
-                AspNetMembershipUser user = new AspNetMembershipUser();
-                this.Convert(dbUser, user);
-                return user;
-            });
+            AspNetMembershipUser user = new AspNetMembershipUser();
+            this.Convert(dbUser, user);
+            return user;
         }
 
-        public Task<AspNetMembershipUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<AspNetMembershipUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             Guid gUserId = Guid.Parse(userId);
-            return Task.Factory.StartNew(() =>
+            AspNetUser dbUser = await _dbcontext.AspNetUsers
+                .Include(u => u.AspNetApplication)
+                .Include(u => u.AspNetMembership)
+                .Where(u => u.UserId == gUserId)
+                .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+
+            if (dbUser == null)
             {
-                AspNetUser dbUser = _dbcontext.AspNetUsers
-                    .Include(u => u.AspNetApplication)
-                    .Include(u => u.AspNetMembership)
-                    .SingleOrDefault(u => u.UserId == gUserId);
+                return null;
+            }
 
-                if (dbUser == null)
-                {
-                    return null;
-                }
-
-                AspNetMembershipUser user = new AspNetMembershipUser();
-                this.Convert(dbUser, user);
-                return user;
-            });
+            AspNetMembershipUser user = new AspNetMembershipUser();
+            this.Convert(dbUser, user);
+            return user;
         }
 
-        public Task<AspNetMembershipUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<AspNetMembershipUser> FindByNameAsync(string normalizedUserName,
+            CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
+            AspNetUser dbUser = await _dbcontext.AspNetUsers
+                .Include(u => u.AspNetApplication)
+                .Include(u => u.AspNetMembership)
+                .Where(u => u.LoweredUserName == normalizedUserName.ToLower())
+                .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
+
+            if (dbUser == null)
             {
-                AspNetUser dbUser = _dbcontext.AspNetUsers
-                    .Include(u => u.AspNetApplication)
-                    .Include(u => u.AspNetMembership)
-                    .SingleOrDefault(u => u.LoweredUserName == normalizedUserName.ToLower());
+                return null;
+            }
 
-                if (dbUser == null)
-                {
-                    return null;
-                }
-
-                AspNetMembershipUser user = new AspNetMembershipUser();
-                this.Convert(dbUser, user);
-                return user;
-            });
+            AspNetMembershipUser user = new AspNetMembershipUser();
+            this.Convert(dbUser, user);
+            return user;
         }
 
         public Task<string> GetEmailAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
@@ -208,34 +203,33 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             return Task.FromResult(user.UserName = userName);
         }
 
-        public Task<IdentityResult> UpdateAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
+            try
             {
-                try
-                {
-                    AspNetUser dbUser = _dbcontext.AspNetUsers
-                        .Include(u => u.AspNetApplication)
-                        .Include(u => u.AspNetMembership)
-                        .SingleOrDefault(u => u.UserId.ToString() == user.Id);
+                AspNetUser dbUser = await _dbcontext.AspNetUsers
+                    .Include(u => u.AspNetApplication)
+                    .Include(u => u.AspNetMembership)
+                    .Where(u => u.UserId.ToString() == user.Id)
+                    .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
-                    if (dbUser != null)
-                    {
-                        this.Convert(user, dbUser);
-                        _dbcontext.AspNetUsers.Update(dbUser);
-                        _dbcontext.SaveChanges();
-                    }
-                    return IdentityResult.Success;
-                }
-                catch(Exception ex)
+                if (dbUser != null)
                 {
-                    return IdentityResult.Failed(new IdentityError
-                    {
-                        Code = ex.GetType().Name,
-                        Description = ex.Message
-                    });
+                    this.Convert(user, dbUser);
+                    _dbcontext.AspNetUsers.Update(dbUser);
+                    _dbcontext.SaveChanges();
                 }
-            });
+
+                return IdentityResult.Success;
+            }
+            catch (Exception ex)
+            {
+                return IdentityResult.Failed(new IdentityError
+                {
+                    Code = ex.GetType().Name,
+                    Description = ex.Message
+                });
+            }
         }
 
         private AspNetMembershipUser Convert(AspNetUser from)
