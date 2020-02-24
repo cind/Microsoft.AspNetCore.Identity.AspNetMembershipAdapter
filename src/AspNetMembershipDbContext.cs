@@ -74,5 +74,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public DbSet<AspNetUser> AspNetUsers { get; set; }
         public DbSet<AspNetMembership> AspNetMemberships { get; set; }
         public DbSet<AspNetApplication> AspNetApplications { get; set; }
+        public DbSet<AspNetRole> AspNetRoles { get; set; }
+        public DbSet<AspNetUsersInRoles> AspNetUsersInRoles { get; set; }
     }
 }

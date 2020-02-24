@@ -241,6 +241,13 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             });
         }
 
+        private AspNetMembershipUser Convert(AspNetUser from)
+        {
+            var to = new AspNetMembershipUser();
+            Convert(from, to);
+            return to;
+        }
+
         private void Convert(AspNetUser from, AspNetMembershipUser to)
         {
             to.Id = from.UserId.ToString();
@@ -290,29 +297,71 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             to.AspNetMembership.FailedPasswordAttemptWindowStart = DateTime.Parse("1754-01-01 00:00:00.000");
         }
 
-        public Task AddToRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
+        public async Task AddToRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var dbuser = await _dbcontext.AspNetUsers
+                .Where(u => u.UserId.ToString() == user.Id)
+                .Include(u => u.AspNetUsersInRoles.Select(ur => ur.Role))
+                .SingleOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var role = await _dbcontext.AspNetRoles
+                .Where(r => r.LoweredRoleName == roleName.ToLower())
+                .SingleOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            var ur = new AspNetUsersInRoles
+            {
+                RoleID = role.RoleId,
+                UserID = dbuser.UserId
+            };
+
+            await _dbcontext.AspNetUsersInRoles.AddAsync(ur, cancellationToken).ConfigureAwait(false);
+            await _dbcontext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public Task RemoveFromRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
+        public async Task RemoveFromRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var ur = await _dbcontext.AspNetUsersInRoles
+                .Where(ur => ur.UserID.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower())
+                .SingleOrDefaultAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            if (ur == null)
+                return;
+
+            _dbcontext.AspNetUsersInRoles.Remove(ur);
+            await _dbcontext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        public Task<IList<string>> GetRolesAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
+        public async Task<IList<string>> GetRolesAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _dbcontext.AspNetUsers
+                .Where(u => u.UserId.ToString() == user.Id)
+                .SelectMany(u => u.AspNetUsersInRoles)
+                .Select(ur => ur.Role.LoweredRoleName)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
         }
 
-        public Task<bool> IsInRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
+        public async Task<bool> IsInRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _dbcontext.AspNetUsersInRoles
+                .AnyAsync(ur => ur.UserID.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower(),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
         }
 
-        public Task<IList<AspNetMembershipUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+        public async Task<IList<AspNetMembershipUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var users = await _dbcontext.AspNetUsersInRoles
+                .Where(ur => ur.Role.LoweredRoleName == roleName.ToLower())
+                .Select(ur => ur.User)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            return users.Select(u => Convert(u)).ToList();
         }
     }
 }
