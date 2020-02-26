@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
@@ -8,8 +9,16 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
     {
         public Guid ApplicationId { get; set; }
         public Guid UserId { get; set; }
+
+        [Required]
+        [MaxLength(256)]
         public string UserName { get; set; }
+
+        [Required]
+        [MaxLength(256)]
         public string LoweredUserName { get; set; }
+
+        [MaxLength(16)]
         public string MobileAlias { get; set; }
         public bool IsAnonymous { get; set; }
         public DateTime LastActivityDate { get; set; }

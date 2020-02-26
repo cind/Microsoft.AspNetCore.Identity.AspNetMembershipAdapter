@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
@@ -8,13 +9,24 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
     {
         public Guid ApplicationId { get; set; }
         public Guid UserId { get; set; }
+
+
+        [Required]
+        [MaxLength(128)]
         public string Password { get; set; }
         public int PasswordFormat { get; set; }
+        [Required]
+        [MaxLength(128)]
         public string PasswordSalt { get; set; }
+        [MaxLength(16)]
         public string MobilePIN { get; set; }
+        [MaxLength(256)]
         public string Email { get; set; }
+        [MaxLength(256)]
         public string LoweredEmail { get; set; }
+        [MaxLength(256)]
         public string PasswordQuestion { get; set; }
+        [MaxLength(128)]
         public string PasswordAnswer { get; set; }
         public bool IsApproved { get; set; }
         public bool IsLockedOut { get; set; }
