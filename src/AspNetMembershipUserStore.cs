@@ -326,12 +326,14 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 
         public async Task<IList<string>> GetRolesAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return await _dbcontext.AspNetUsers
+            var roles = await _dbcontext.AspNetUsers
                 .Where(u => u.UserId == user.Id)
                 .SelectMany(u => u.AspNetUsersInRoles)
-                .Select(ur => ur.Role.LoweredRoleName)
+                .Select(ur => ur.Role.RoleName)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
+
+            return roles;
         }
 
         public async Task<bool> IsInRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
