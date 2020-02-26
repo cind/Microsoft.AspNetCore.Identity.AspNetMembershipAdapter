@@ -17,6 +17,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
                 .AddEntityFrameworkStores<AspNetMembershipDbContext>()
                 .AddUserStore<AspNetMembershipUserStore>()
                 .AddRoleStore<AspNetMembershipRoleStore>()
+                .AddRoles<AspNetMembershipRole>()
                 .AddDefaultTokenProviders();
         }
 
@@ -29,6 +30,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
                 .AddEntityFrameworkStores<AspNetMembershipDbContext>()
                 .AddUserStore<AspNetMembershipUserStore>()
                 .AddRoleStore<AspNetMembershipRoleStore>()
+                .AddRoles<AspNetMembershipRole>()
                 .AddDefaultTokenProviders();
         }
     }
