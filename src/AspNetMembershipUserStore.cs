@@ -160,7 +160,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 
         public Task<string> GetUserIdAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.Id);
+            return Task.FromResult(user.Id.ToString());
         }
 
         public Task<string> GetUserNameAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
@@ -210,7 +210,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
                 AspNetUser dbUser = await _dbcontext.AspNetUsers
                     .Include(u => u.AspNetApplication)
                     .Include(u => u.AspNetMembership)
-                    .Where(u => u.UserId.ToString() == user.Id)
+                    .Where(u => u.UserId == user.Id)
                     .SingleOrDefaultAsync(cancellationToken).ConfigureAwait(false);
 
                 if (dbUser != null)
@@ -241,7 +241,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
 
         private void Convert(AspNetUser from, AspNetMembershipUser to)
         {
-            to.Id = from.UserId.ToString();
+            to.Id = from.UserId;
             to.UserName = from.UserName;
             to.NormalizedUserName = from.LoweredUserName.ToUpper();
             to.Email = from.AspNetMembership.Email.ToLower();
@@ -267,7 +267,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
                 AspNetApplication = application
             };
 
-            to.UserId = Guid.Parse(from.Id);
+            to.UserId = from.Id;
             to.UserName = from.UserName;
             to.LoweredUserName = from.UserName.ToLower();
             to.LastActivityDate = DateTime.UtcNow;
@@ -291,8 +291,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public async Task AddToRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
             var dbuser = await _dbcontext.AspNetUsers
-                .Where(u => u.UserId.ToString() == user.Id)
-                .Include(u => u.AspNetUsersInRoles.Select(ur => ur.Role))
+                .Where(u => u.UserId == user.Id)
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -314,7 +313,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public async Task RemoveFromRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
             var userRole = await _dbcontext.AspNetUsersInRoles
-                .Where(ur => ur.UserId.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower())
+                .Where(ur => ur.UserId == user.Id && ur.Role.LoweredRoleName == roleName.ToLower())
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
 
@@ -328,7 +327,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public async Task<IList<string>> GetRolesAsync(AspNetMembershipUser user, CancellationToken cancellationToken)
         {
             return await _dbcontext.AspNetUsers
-                .Where(u => u.UserId.ToString() == user.Id)
+                .Where(u => u.UserId == user.Id)
                 .SelectMany(u => u.AspNetUsersInRoles)
                 .Select(ur => ur.Role.LoweredRoleName)
                 .ToListAsync(cancellationToken)
@@ -338,7 +337,7 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
         public async Task<bool> IsInRoleAsync(AspNetMembershipUser user, string roleName, CancellationToken cancellationToken)
         {
             return await _dbcontext.AspNetUsersInRoles
-                .AnyAsync(ur => ur.UserId.ToString() == user.Id && ur.Role.LoweredRoleName == roleName.ToLower(),
+                .AnyAsync(ur => ur.UserId == user.Id && ur.Role.LoweredRoleName == roleName.ToLower(),
                     cancellationToken)
                 .ConfigureAwait(false);
 
