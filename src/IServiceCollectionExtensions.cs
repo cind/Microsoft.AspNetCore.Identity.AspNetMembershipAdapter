@@ -13,9 +13,10 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             services.AddDbContext<AspNetMembershipDbContext>(options => options.UseSqlServer(connectionString));
             services.AddTransient<IPasswordHasher<AspNetMembershipUser>, AspNetMembershipPasswordHasher>();
 
-            return services.AddIdentity<AspNetMembershipUser, AspNetRole>()
+            return services.AddIdentity<AspNetMembershipUser, AspNetMembershipRole>()
                 .AddEntityFrameworkStores<AspNetMembershipDbContext>()
                 .AddUserStore<AspNetMembershipUserStore>()
+                .AddRoleStore<AspNetMembershipRoleStore>()
                 .AddDefaultTokenProviders();
         }
 
@@ -24,9 +25,10 @@ namespace Microsoft.AspNetCore.Identity.AspNetMembershipAdapter
             services.AddDbContext<AspNetMembershipDbContext>(options => options.UseSqlServer(connectionString));
             services.AddTransient<IPasswordHasher<AspNetMembershipUser>, AspNetMembershipPasswordHasher>();
 
-            return services.AddIdentity<AspNetMembershipUser, AspNetRole>(setupAction)
+            return services.AddIdentity<AspNetMembershipUser, AspNetMembershipRole>(setupAction)
                 .AddEntityFrameworkStores<AspNetMembershipDbContext>()
                 .AddUserStore<AspNetMembershipUserStore>()
+                .AddRoleStore<AspNetMembershipRoleStore>()
                 .AddDefaultTokenProviders();
         }
     }
